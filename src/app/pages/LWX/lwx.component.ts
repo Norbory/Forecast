@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
+import { LWXService } from '../../core/services/lwx.service';
 
 @Component({
   selector: 'app-lwx',
@@ -11,12 +12,31 @@ import { Chart, registerables } from 'chart.js';
 })
 
 export class LWXComponent implements OnInit {
+  
+  private _lwxService!: LWXService ;
+
   constructor() {
     Chart.register(...registerables);
   }
 
   ngOnInit(): void {
     this.createChart();
+    this.fetchForecast();
+  }
+
+  // Variable to store the forecast data
+  forecastData: any;
+
+  // Fetch the forecast data from the National Weather Service API
+  fetchForecast(): void {
+    this._lwxService.getForecast().subscribe((data) => {
+      this.forecastData = data;
+    });
+  }
+
+  // show the forecast data
+  showForecast(): void {
+    console.log(this.forecastData);
   }
 
   createChart(): void {
